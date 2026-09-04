@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-
-int main(){
-    printf("Hello CS232!");
-
+int main() {
+	printf("Hello CS232!");
 }
