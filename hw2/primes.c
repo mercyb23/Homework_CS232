@@ -11,7 +11,7 @@
 int main(int argc, const char** argv){
 
     int lowerBound, upperBound;
-
+    
     if(argc != 3){
         fprintf(stderr, "USAGE: %s lowerBound upperBound\n", argv[0]);
         return -1;
@@ -29,7 +29,36 @@ int main(int argc, const char** argv){
     {
         /* TODO: fill in the code that outputs the prime numbers */
         /*   in the range [lowerBound,upperBound] in ascending order */
+        int range = upperBound - lowerBound;
+        
+       
+        for(int i = lowerBound; i <= upperBound;i++ )
+        {
+            if(i <2)
+            {
+                continue;
+            }
+            
+        int isPrime =1;
+            for(int k=2; k*k<=i;k++)
+            {
+                if(i%k==0)
+                {
+                    isPrime = 0;
+                    break;
+                }
+            }
+           if(isPrime)
+           {
+            printf("%d\n",i);
+           }
+            
+        }
+       
+        
 
+
+    
     }
 
     return 0;
