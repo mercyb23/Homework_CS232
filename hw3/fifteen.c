@@ -224,7 +224,27 @@ void draw(void)
  */
 short move(int tile)
 {
-    // TODO
+    // TOD
+    int emptycol;
+    int emptyrow;
+
+    findEmpty(&emptycol,&emptyrow);
+
+    int tilerow, tilecol;
+
+
+    findtile(tile,&tilerow,&tilecol);
+
+    bool isNext = (tilerow == emptyrow && abs(tilecol-emptycol)== 1)
+    || (tilecol == emptycol && abs(tilerow - emptyrow)== 1);
+
+    if(isNext)
+    {
+        board[emptyrow][emptycol] = tile;
+        board[tilerow][tilecol]=0;
+        return 1;
+    }
+    
     return 0;
 }
 
@@ -235,5 +255,25 @@ short move(int tile)
 short won(void)
 {
     // TODO
+    int expected =1;
+    for(int i =0; i<d; i++)
+    {
+
+        for(int j = 0;j <d;j++)
+        {
+            if(i == d-1&& j==d-1)
+            {
+                continue;
+            }
+            if(board[i][j] != expected)
+            {
+                return 0;
+            }
+        }
+    }
+
+
+
     return 1;
+
 }
