@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 // constants
 #define DIM_MIN 3
@@ -210,11 +211,11 @@ void draw(void)
     {
         for(int j= 0;j<d; j++)
         {
-            printf("%d",board[i][j]);
+            printf("%2d",board[i][j]);
         }
         printf("\n");
     }
-    return 0;
+   return;
 }
 
 
@@ -222,13 +223,37 @@ void draw(void)
  * If tile borders empty space, moves tile and returns 1, else
  * returns 0.
  */
+void findempty(int *row, int *col)
+{
+    for (int i = 0; i < d; i++)
+        for (int j = 0; j < d; j++)
+            if (board[i][j] == 0)
+            {
+                *row = i;
+                *col = j;
+                return;
+            }
+}
+
+void findtile(int value, int *row, int *col)
+{
+    for (int i = 0; i < d; i++)
+        for (int j = 0; j < d; j++)
+            if (board[i][j] == value)
+            {
+                *row = i;
+                *col = j;
+                return;
+            }
+}
+
 short move(int tile)
 {
     // TOD
     int emptycol;
     int emptyrow;
 
-    findEmpty(&emptycol,&emptyrow);
+    findempty(&emptyrow, &emptycol); 
 
     int tilerow, tilecol;
 
@@ -269,6 +294,7 @@ short won(void)
             {
                 return 0;
             }
+            expected++;
         }
     }
 
