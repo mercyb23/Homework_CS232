@@ -42,6 +42,8 @@ void init(void);
 void draw(void);
 short move(int tile);
 short won(void);
+void findempty(int *row, int *col);
+void findtile(int value, int *row, int *col);
 int get_int();
 
 int main(int argc, char* argv[])
@@ -104,7 +106,9 @@ int main(int argc, char* argv[])
         }
 
         // prompt for move
+
         printf("Tile to move: ");
+        fflush(stdout);
         int tile = get_int();
         printf("\n");
 
@@ -142,14 +146,23 @@ int main(int argc, char* argv[])
  */
  int get_int()
  {
-    int input = 0;
-    short invalid = 0;
+    int input;
+    
+    if(scanf("%d", &input) !=1)
+    {
+        return INT_MAX;
+    }
+    return input;
+}
 
-    char c = getchar();
+
+    
+/*
+
     if (c == '\n')
         return INT_MAX;
 
-    while (c != '\n') 
+    while (c != '\n'&& c != EOF) 
     {
         if ((c >= '0') && ( c <= '9'))
         {
@@ -160,12 +173,11 @@ int main(int argc, char* argv[])
 
         c = getchar();
     }
+*/
+   
 
-    if (invalid)
-        return INT_MAX;
-    else 
-        return input;
- }
+    
+ 
 
 /**
  * Greets player.
@@ -184,7 +196,7 @@ void init(void)
 {
     // TODO
 
-    int count = d*d-1;
+    int count = d*d- 1;
     for(int i = 0; i< d ;i++)
     {
         for(int j =0;j<d ;j++)
@@ -207,15 +219,29 @@ void draw(void)
 {
     // TODO
 
-    for(int i= 0;i<d;i++)
+    for (int i = 0; i < d; i++)
     {
-        for(int j= 0;j<d; j++)
+        for (int j = 0; j < d; j++)
         {
-            printf("%2d",board[i][j]);
+            if (board[i][j] == 0)
+            {
+                printf("  ");
+            }
+            else
+            {
+                printf("%2d", board[i][j]);
+            }
+
+            if (j < d - 1)
+            {
+                printf(" ");
+            }
         }
+
         printf("\n");
     }
-   return;
+
+    return;
 }
 
 
@@ -252,13 +278,19 @@ short move(int tile)
     // TOD
     int emptycol;
     int emptyrow;
+    int tilerow = -1;
+    int tilecol = -1;
 
     findempty(&emptyrow, &emptycol); 
-
-    int tilerow, tilecol;
-
-
     findtile(tile,&tilerow,&tilecol);
+
+    
+    if (tilerow == -1)
+    {
+        return 0;
+    }
+
+    
 
     bool isNext = (tilerow == emptyrow && abs(tilecol-emptycol)== 1)
     || (tilecol == emptycol && abs(tilerow - emptyrow)== 1);
@@ -286,6 +318,7 @@ short won(void)
 
         for(int j = 0;j <d;j++)
         {
+            
             if(i == d-1&& j==d-1)
             {
                 continue;
