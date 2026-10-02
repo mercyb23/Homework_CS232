@@ -110,6 +110,7 @@ int main(int argc, char* argv[])
         printf("Tile to move: ");
         fflush(stdout);
         int tile = get_int();
+        
         printf("\n");
 
         // quit if user inputs 0 (for testing)
@@ -144,11 +145,17 @@ int main(int argc, char* argv[])
  * Get an non-negative integer from user input
  * If the input is not non-negative integer, return INT_MAX
  */
- int get_int()
+ int get_int(void)
  {
+    char line[64];
     int input;
+
+    if (fgets(line, sizeof(line), stdin) == NULL)
+    {
+        return 0;         
+    }
     
-    if(scanf("%d", &input) !=1)
+    if(sscanf(line,"%d", &input) !=1)
     {
         return INT_MAX;
     }
@@ -157,24 +164,8 @@ int main(int argc, char* argv[])
 
 
     
-/*
 
-    if (c == '\n')
-        return INT_MAX;
 
-    while (c != '\n'&& c != EOF) 
-    {
-        if ((c >= '0') && ( c <= '9'))
-        {
-            input = input * 10 + (c - '0');
-        } else {
-            invalid = 1;
-        }
-
-        c = getchar();
-    }
-*/
-   
 
     
  
@@ -207,7 +198,14 @@ void init(void)
     }
     board[d-1][d-1]=0;
 
-
+     if ((d * d - 1) % 2 == 1)
+   {
+       int r1, c1, r2, c2;
+       findtile(1, &r1, &c1);
+       findtile(2, &r2, &c2);
+       board[r1][c1] = 2;
+       board[r2][c2] = 1;
+   }
 
 
 }
@@ -245,10 +243,6 @@ void draw(void)
 }
 
 
-/**
- * If tile borders empty space, moves tile and returns 1, else
- * returns 0.
- */
 void findempty(int *row, int *col)
 {
     for (int i = 0; i < d; i++)
@@ -273,6 +267,10 @@ void findtile(int value, int *row, int *col)
             }
 }
 
+/**
+ * If tile borders empty space, moves tile and returns 1, else
+ * returns 0.
+ */
 short move(int tile)
 {
     // TOD
