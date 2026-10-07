@@ -4,7 +4,7 @@
 // at least 3 bugs. Write your guesses below:
 //1.the argument for perfectsqr is a char not a int
 //2.missing the starting point in the for loop headliner
-//3. k= 0 should star with 1?
+//3. k= 0 should star with 1? t
 
 int perfectSquare(int num);
 int main(void){

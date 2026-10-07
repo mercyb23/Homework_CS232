@@ -12,7 +12,7 @@ int main (void){
   printf("Please enter width of rectangle (< 10):\n");
   width = getchar()- '0';
   getchar();
-
+ 
   printf("Please enter height of rectangle (< 10):\n");
   height = getchar() - '0';
   getchar();

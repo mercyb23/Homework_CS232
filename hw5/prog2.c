@@ -5,7 +5,7 @@
 // at least 2 bugs. Write your guesses below:
 //1. the strlen doesnt get the length of the array 
 //but of each object in the array
-//2. the putchar on 23 uses "" instead of ''
+//2. the putchar on 23 uses "" instead of '' cool
 
 
 int main(void){
