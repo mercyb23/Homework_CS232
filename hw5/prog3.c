@@ -23,9 +23,7 @@ int main(void){
     return 0;
 }
 
-//checks if a number is a perfect square
-// a perfect square is an integer that is the product
-// of an integer multiplied by itself (e.g. 25 = 5 x 5)
+
 int perfectSquare(int num){
     //int isPerfectSquare = 0;
     //int k = 0;
