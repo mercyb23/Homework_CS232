@@ -197,7 +197,7 @@ void init(void)
         }
     }
     board[d-1][d-1]=0;
-
+//check this part of the code
      if ((d * d - 1) % 2 == 1)
    {
        int r1, c1, r2, c2;
@@ -230,10 +230,10 @@ void draw(void)
                 printf("%2d", board[i][j]);
             }
 
-            if (j < d - 1)
-            {
+           
+            
                 printf(" ");
-            }
+            
         }
 
         printf("\n");
@@ -277,28 +277,24 @@ short move(int tile)
     int emptycol;
     int emptyrow;
     int tilerow = -1;
-    int tilecol = -1;
-
-    findempty(&emptyrow, &emptycol); 
-    findtile(tile,&tilerow,&tilecol);
-
-    
-    if (tilerow == -1)
+    int tilecol = -1;findempty(&emptyrow, &emptycol); 
+  if (tilerow == -1|| emptyrow>= d*d)
     {
         return 0;
     }
-
     
 
-    bool isNext = (tilerow == emptyrow && abs(tilecol-emptycol)== 1)
-    || (tilecol == emptycol && abs(tilerow - emptyrow)== 1);
-
-    if(isNext)
+    int distance = abs(tilerow - emptyrow) + abs(tilecol - emptycol);
+    if (distance == 1)
     {
         board[emptyrow][emptycol] = tile;
-        board[tilerow][tilecol]=0;
+        board[tilerow][tilecol] = 0;
         return 1;
     }
+
+
+  
+ 
     
     return 0;
 }
@@ -319,7 +315,7 @@ short won(void)
             
             if(i == d-1&& j==d-1)
             {
-                continue;
+                return board[i][j] == 0;
             }
             if(board[i][j] != expected)
             {
@@ -331,6 +327,6 @@ short won(void)
 
 
 
-    return 1;
+    return false;
 
 }

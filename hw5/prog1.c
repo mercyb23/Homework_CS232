@@ -17,7 +17,7 @@ int main (void){
   height = getchar() - '0';
   getchar();
 
-  for(int i = 0; i < height; ++i){
+  for(int i = 0; i < height; i++){
     area += width;
   }
 
