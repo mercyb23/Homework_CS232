@@ -273,17 +273,32 @@ void findtile(int value, int *row, int *col)
  */
 short move(int tile)
 {
-    // TOD
-    int emptycol;
-    int emptyrow;
+int emptyrow, emptycol;
     int tilerow = -1;
-    int tilecol = -1;findempty(&emptyrow, &emptycol); 
-  if (tilerow == -1|| emptyrow>= d*d)
+    int tilecol = -1;
+
+    findempty(&emptyrow, &emptycol);
+
+    
+    for (int i = 0; i < d; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {
+            if (board[i][j] == tile)
+            {
+                tilerow = i;
+                tilecol = j;
+            }
+        }
+    }
+
+    
+    if (tilerow == -1)
     {
         return 0;
     }
-    
 
+    
     int distance = abs(tilerow - emptyrow) + abs(tilecol - emptycol);
     if (distance == 1)
     {
@@ -292,11 +307,8 @@ short move(int tile)
         return 1;
     }
 
-
-  
- 
-    
     return 0;
+
 }
 
 /**
