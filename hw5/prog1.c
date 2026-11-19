@@ -7,20 +7,23 @@
 //3. line 24 doesnt have a %d for the format
 
 int main (void){
+  //width and area was never intialized
   int width=0, area=0, height = 0;
 
   printf("Please enter width of rectangle (< 10):\n");
+  //getchar return the ASCII code not an int
   width = getchar()- '0';
   getchar();
  
   printf("Please enter height of rectangle (< 10):\n");
+    //getchar return the ASCII code not an int
   height = getchar() - '0';
   getchar();
 
   for(int i = 0; i < height; i++){
     area += width;
   }
-
+  //it doesnt have a format specifier
   printf("The area of the rectangle is: %d\n", area);
 
   return 0;
