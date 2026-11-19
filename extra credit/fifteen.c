@@ -31,31 +31,33 @@
 #endif // INT_MAX
 
 // board
-int board[DIM_MAX][DIM_MAX];
 
-// dimensions
+
 int d;
 
 // prototypes
 void greet(void);
-void init(void);
-void draw(void);
-short move(int tile);
-short won(void);
-void findempty(int *row, int *col);
-void findtile(int value, int *row, int *col);
-int get_int();
+void free_board(int **board, int d);
+void init(int **board, int d);
+void draw(int **board, int d);
+void findempty(int **board, int d, int *row, int *col);
+void findtile(int **board, int d, int value, int *row, int *col);
+short move(int **board, int d, int tile);
+short won(int **board, int d);
+int get_int(void);
+int **allocate_board(int d);
+
 
 int main(int argc, char* argv[])
 {
-    // ensure proper usage
+ 
     if (argc != 2)
     {
-        printf("Usage: fifteen d\n");
+        printf("Usage: fifteen %s d\n",argv[0]);
         return 1;
     }
 
-    // ensure valid dimensions
+   
     d = atoi(argv[1]);
     if (d < DIM_MIN || d > DIM_MAX)
     {
@@ -71,17 +73,26 @@ int main(int argc, char* argv[])
         return 3;
     }
 
+    // allocate the board on the heap
+    int **board = allocate_board(d);
+    if (board == NULL)
+    {
+        fclose(file);
+        printf("Error: out of memory.\n");
+        return 4;
+    }
+
     // greet user with instructions
     greet();
 
     // initialize the board
-    init();
+    init(board, d);
 
     // accept moves until game is won
     while (1)
     {
         // draw the current state of the board
-        draw();
+        draw(board, d);
 
         // log the current state of the board (for testing)
         for (int i = 0; i < d; i++)
@@ -99,63 +110,65 @@ int main(int argc, char* argv[])
         fflush(file);
 
         // check for win
-        if (won())
+        if (won(board, d))
         {
             printf("ftw!\n");
             break;
         }
 
-        // prompt for move
-
+       
         printf("Tile to move: ");
         fflush(stdout);
         int tile = get_int();
-        
+
         printf("\n");
 
-        // quit if user inputs 0 (for testing)
+        
         if (tile == 0)
         {
             break;
         }
 
-        // log move (for testing)
+        
         fprintf(file, "%i\n", tile);
         fflush(file);
 
-        // move if possible, else report illegality
-        if (!move(tile))
+      
+        if (!move(board, d, tile))
         {
             printf("\nIllegal move.\n");
             usleep(500000);
         }
 
-        // sleep thread for animation's sake
+        
         usleep(500000);
     }
 
-    // close log
+   
     fclose(file);
 
-    // success
+   
+    free_board(board, d);
+
+   
     return 0;
 }
 
 /**
- * Get an non-negative integer from user input
- * If the input is not non-negative integer, return INT_MAX
+ * Gets an integer from user input.
+ * Returns INT_MAX if the input is not an integer, 0 on end of input.
  */
- int get_int(void)
- {
+int get_int(void)
+{
     char line[64];
     int input;
 
     if (fgets(line, sizeof(line), stdin) == NULL)
     {
-        return 0;         
+        return 0;
     }
-    
-    if(sscanf(line,"%d", &input) !=1)
+
+    if (sscanf(line, "%d", &input) != 1)
     {
         return INT_MAX;
     }
@@ -163,60 +176,82 @@ int main(int argc, char* argv[])
 }
 
 
-    
-
-
-
-    
- 
-
-/**
- * Greets player.
- */
 void greet(void)
-{    
+{
     printf("WELCOME TO GAME OF FIFTEEN\n");
     usleep(2000000);
+}
+
+
+int **allocate_board(int d)
+{
+    int **board = malloc(d * sizeof(int *));
+    if (board == NULL)
+    {
+        return NULL;
+    }
+
+    for (int i = 0; i < d; i++)
+    {
+        board[i] = malloc(d * sizeof(int));
+        if (board[i] == NULL)
+        {
+            for (int k = 0; k < i; k++)
+            {
+                free(board[k]);
+            }
+            free(board);
+            return NULL;
+        }
+    }
+
+    return board;
+}
+
+/**
+ * Frees a board allocated by allocate_board.
+ */
+void free_board(int **board, int d)
+{
+    for (int i = 0; i < d; i++)
+    {
+        free(board[i]);
+    }
+    free(board);
 }
 
 /**
  * Initializes the game's board with tiles numbered 1 through d*d - 1
  * (i.e., fills 2D array with values but does not actually print them).
  */
-void init(void)
+void init(int **board, int d)
 {
-    // TODO
-
-    int count = d*d- 1;
-    for(int i = 0; i< d ;i++)
+    int count = d * d - 1;
+    for (int i = 0; i < d; i++)
     {
-        for(int j =0;j<d ;j++)
+        for (int j = 0; j < d; j++)
         {
             board[i][j] = count;
             count--;
         }
     }
-    board[d-1][d-1]=0;
-//check this part of the code
-     if ((d * d - 1) % 2 == 1)
-   {
-       int r1, c1, r2, c2;
-       findtile(1, &r1, &c1);
-       findtile(2, &r2, &c2);
-       board[r1][c1] = 2;
-       board[r2][c2] = 1;
-   }
+    board[d - 1][d - 1] = 0;
 
-
+    // if the number of tiles is odd (d is even), swap 1 and 2
+    if ((d * d - 1) % 2 == 1)
+    {
+        int r1, c1, r2, c2;
+        findtile(board, d, 1, &r1, &c1);
+        findtile(board, d, 2, &r2, &c2);
+        board[r1][c1] = 2;
+        board[r2][c2] = 1;
+    }
 }
 
 /**
- * Prints the board in its current state.
- */
-void draw(void)
+ *//Prints the board in its current state.
+void draw(int **board, int d)
 {
-    // TODO
-
     for (int i = 0; i < d; i++)
     {
         for (int j = 0; j < d; j++)
@@ -229,57 +264,57 @@ void draw(void)
             {
                 printf("%2d", board[i][j]);
             }
-
-           
-            
-                printf(" ");
-            
+            printf(" ");
         }
-
         printf("\n");
     }
-
-    return;
 }
 
-
-void findempty(int *row, int *col)
+void findempty(int **board, int d, int *row, int *col)
 {
     for (int i = 0; i < d; i++)
+    {
         for (int j = 0; j < d; j++)
+        {
             if (board[i][j] == 0)
             {
                 *row = i;
                 *col = j;
                 return;
             }
+        }
+    }
 }
 
-void findtile(int value, int *row, int *col)
+void findtile(int **board, int d, int value, int *row, int *col)
 {
     for (int i = 0; i < d; i++)
+    {
         for (int j = 0; j < d; j++)
+        {
             if (board[i][j] == value)
             {
                 *row = i;
                 *col = j;
                 return;
             }
+        }
+    }
 }
 
 /**
  * If tile borders empty space, moves tile and returns 1, else
  * returns 0.
  */
-short move(int tile)
+short move(int **board, int d, int tile)
 {
-    int emptyrow, emptycol;
+    int emptyrow = -1;
+    int emptycol = -1;
     int tilerow = -1;
     int tilecol = -1;
 
-    findempty(&emptyrow, &emptycol);
+    findempty(board, d, &emptyrow, &emptycol);
 
-    
     for (int i = 0; i < d; i++)
     {
         for (int j = 0; j < d; j++)
@@ -292,13 +327,11 @@ short move(int tile)
         }
     }
 
-    
     if (tilerow == -1)
     {
         return 0;
     }
 
-    
     int distance = abs(tilerow - emptyrow) + abs(tilecol - emptycol);
     if (distance == 1)
     {
@@ -314,21 +347,18 @@ short move(int tile)
  * Returns 1 if game is won (i.e., board is in winning configuration),
  * else 0.
  */
-short won(void)
+short won(int **board, int d)
 {
-    // TODO
-    int expected =1;
-    for(int i =0; i<d; i++)
+    int expected = 1;
+    for (int i = 0; i < d; i++)
     {
-
-        for(int j = 0;j <d;j++)
+        for (int j = 0; j < d; j++)
         {
-            
-            if(i == d-1&& j==d-1)
+            if (i == d - 1 && j == d - 1)
             {
                 return board[i][j] == 0;
             }
-            if(board[i][j] != expected)
+            if (board[i][j] != expected)
             {
                 return 0;
             }
@@ -336,8 +366,5 @@ short won(void)
         }
     }
 
-
-
-    return false;
-
+    return 0;
 }
