@@ -9,6 +9,12 @@
 #include <string.h>
 
 /* TODO: structure definitions */
+struct TrieNode
+{
+  int count
+  struct TrieNode *children[26];
+}
+
 
 
 /* NOTE: int return values can be used to indicate errors (typically non-zero)
@@ -17,10 +23,11 @@
 /* TODO: change this return type */
 void indexPage(const char* url);
 
-int addWordOccurrence(const char* word, const int wordLength
+int addWordOccurrence(struct TrieNode *root, char* word, const int wordLength
 		       /* TODO: other parameters you need */);
 
-void printTrieContents(/* TODO: any parameters you need */);
+static void printTrieContents(struct TrieNode *node,char *buffer,int length,int bufsize);
+
 
 int freeTrieMemory(/* TODO: any parameters you need */);
 
@@ -40,12 +47,46 @@ int main(int argc, char** argv){
 void indexPage(const char* url)
 {}
 
-int addWordOccurrence(const char* word, const int wordLength
+int addWordOccurrence(struct TrieNode *root, char* word, const int wordLength
 		       /* TODO: other parameters you need */)
-{}
+{
+  struct TrieNode *spot = root;
+  for(int i= 0; i< length;i++)
+  {
+    int index = word[i]- 'a';
+    if(spot->children[index] == NULL)
+      {
+        spot->children[index] = createNode();
+      }
+  }
+}
 
-void printTrieContents(/* TODO: any parameters you need */)
-{}
+void printTrieContents(struct TrieNode *node,char *buffer,int length,int bufsize)
+{
+  if(node == NULL)
+  {
+    return;
+  }
+
+
+  if(node ->count > 0)
+  {
+    buffer[length] = '\0';
+    printf("%s: %d\n", buffer, node -> count);
+  }
+  for(int i =0; i< 26;i++)
+  {
+    if(node -.> children[i] != NULL)
+    {
+      if(length +2>bufsize)
+      {
+        printf("the word buffer is too small\n");
+        return;
+      }
+      buffer[length] ='a' +i;
+      printf(node->children[i],buffer,length+1,bufsize)
+    }
+  }}
 
 int freeTrieMemory(/* TODO: any parameters you need */)
 {}
