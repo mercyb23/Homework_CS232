@@ -208,9 +208,9 @@ int **allocate_board(int d)
     return board;
 }
 
-/**
- * Frees a board allocated by allocate_board.
- */
+
+// Frees the board
+
 void free_board(int **board, int d)
 {
     for (int i = 0; i < d; i++)
@@ -237,7 +237,7 @@ void init(int **board, int d)
     }
     board[d - 1][d - 1] = 0;
 
-    // if the number of tiles is odd (d is even), swap 1 and 2
+ 
     if ((d * d - 1) % 2 == 1)
     {
         int r1, c1, r2, c2;
@@ -248,8 +248,8 @@ void init(int **board, int d)
     }
 }
 
-/**
- *//Prints the board in its current state.
+
+ 
 void draw(int **board, int d)
 {
     for (int i = 0; i < d; i++)
