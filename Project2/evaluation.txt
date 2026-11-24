@@ -1,0 +1,11 @@
+Mercy - 
+printTrieContents function
+addWordOccurence function
+the top half of the index Page function
+
+Quang -
+freeTrieMemory function
+main function
+second half of indexPage function
+
+9 hours were put into this project

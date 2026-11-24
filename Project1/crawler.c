@@ -162,7 +162,7 @@ void printAddresses(const struct listNode *pNode){
     while(pNode  != NULL)
   {
     printf("%s\n",pNode->addr);
-    pNode=pNode-> next; // this is to keep us moving to the right
+    pNode=pNode-> next; 
   }
 }
 
